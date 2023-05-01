@@ -23,7 +23,7 @@ class CreateLiquor(graphene.Mutation):
     paisOrigen= graphene.String()
     size = graphene.String()
     tipoEnvase = graphene.String()
-    edicion = graphene.String ()
+    edicion = graphene.String()
     precio = graphene.Float()
 
     #2
