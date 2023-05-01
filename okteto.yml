@@ -1,0 +1,12 @@
+build:
+ yoangelcruz:  # cambiar por su namespace de okteto
+   image: okteto.dev/yoangelcruz:latest  # cambiar por su namespace de okteto
+
+deploy:
+ - okteto build # build the image with the latest code
+ - kubectl apply -f manifests # create all the resources in kubernetes
+dev:
+ yoangelcruz:
+   command: bash
+   sync:
+   - .:/licores   # cambiar por su proyecto
