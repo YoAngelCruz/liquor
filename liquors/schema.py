@@ -3,6 +3,9 @@ from graphene_django import DjangoObjectType
 
 from .models import Liquor, Vote
 from users.schema import UserType
+from graphql import GraphQLError
+from django.db.models import Q
+
 
 
 
@@ -16,10 +19,18 @@ class VoteType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    liquors = graphene.List(LiquorType)
+    liquors = graphene.List(LiquorType, search=graphene.String())
     votes = graphene.List(VoteType)
 
-    def resolve_liquors(self, info, **kwargs):
+    def resolve_liquors(self, info, search=None, **kwargs):
+        # The value sent with the search parameter will be in the args variable
+        if search:
+            filter = (
+                Q(nombre__icontains=search)|
+                Q(destilado__icontains=search)
+            )
+            return Liquor.objects.filter(filter)
+
         return Liquor.objects.all()
     def resolve_votes(self, info, **kwargs):
         return Vote.objects.all()
@@ -85,8 +96,8 @@ class CreateVote(graphene.Mutation):
     
     def mutate(self, info, liquor_id):
         user = info.context.user
-        if user.is_anonymous:
-            raise Exception('You must be logged to vote!')
+        if user.is_anonymous:   #1
+            raise GraphQLError('You must be logged to vote!')
 
         liquor = Liquor.objects.filter(id=liquor_id).first()
         if not liquor:
