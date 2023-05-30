@@ -45,6 +45,21 @@ jobs:
       run: cat .env
     - name: run tests
       run: python manage.py test --settings=settings.testing -v 3 --keepdb
+    - name: update DEV_SECRET_KEY
+      run: sed -i 's/MY_DEV_SECRET_KEY/${{secrets.DEV_SECRET_KEY}}/g' manifests/yoangelcruz-configmap.yaml      
+    - name: update MY_DEV_DATABASE
+      run: sed -i 's/MY_DEV_DATABASE/${{secrets.DEV_DATABASE}}/g' manifests/yoangelcruz-configmap.yaml      
+    - name: update MY_DEV_USER
+      run: sed -i 's/MY_DEV_USER/${{secrets.DEV_USER}}/g' manifests/yoangelcruz-configmap.yaml      
+    - name: update MY_DEV_PASSWORD
+      run: sed -i 's/MY_DEV_PASSWORD/${{secrets.DEV_PASSWORD}}/g' manifests/yoangelcruz-configmap.yaml      
+    - name: update MY_DEV_HOST 
+      run: sed -i 's/MY_DEV_HOST /${{secrets.DEV_HOST }}/g' manifests/yoangelcruz-configmap.yaml      
+    - name: update MY_DEV_PORT 
+      run: sed -i 's/MY_DEV_PORT /${{secrets.DEV_PORT }}/g' manifests/yoangelcruz-configmap.yaml
+    - name: show config 
+      run: cat manifests/yoangelcruz-configmap.yaml
+    
     - uses: okteto/context@2.7.0
       with:
        token: ${{ secrets.OKTETO_TOKEN }}
